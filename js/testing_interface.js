@@ -559,6 +559,22 @@ function recolor_stamp() {
     render_stamps();
 }
 
+function scale_stamp() {
+    let last_stamp = STAMPS[STAMPS.length-1];
+    scale_count = 0;
+    if (scale_count != 4) {
+        last_stamp.height *= 2;
+        last_stamp.width *= 2;
+        scale_count += 1;
+        render_stamps();
+    } else {
+        last_stamp.height /= 16;
+        last_stamp.width /= 16;
+        scale_count = 0;
+        render_stamps();
+    }
+}
+
 // Initial event binding.
 
 $(document).ready(function () {
