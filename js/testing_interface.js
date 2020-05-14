@@ -222,7 +222,7 @@ function undo_stamp_placement() {
 }
 
 function run_action_sequence() {
-    // wipe all the reconstruction grids blank ! 
+    // wipe all the reconstruction grids blank !
     Object.keys(REC).forEach(function(key) {
         const inputGrid = REC[key][0];
         const outputGrid = REC[key][1];
@@ -250,7 +250,7 @@ function run_action_sequence() {
         console.log("HFIKDSJFKDSL");
         // place stamp at x,y of rec
         apply_stamp(rec_grid, xx, yy, stamp_grid);
-    });      
+    });
 
     $('#reconstruction_text').html(ACTION_SEQUENCE.map(a => a.join(",")).join("] p["));
     synch_reconstruction();
@@ -306,7 +306,7 @@ function loadJSONTask(train, test) {
 }
 
 function display_task_name(task_name, task_index, number_of_tasks) {
-    big_space = '&nbsp;'.repeat(4); 
+    big_space = '&nbsp;'.repeat(4);
     document.getElementById('task_name').innerHTML = (
         'Task name:' + big_space + task_name + big_space + (
             task_index===null ? '' :
@@ -525,7 +525,7 @@ function rotate_stamp() {
 function flip_stamp() {
     let last_stamp = STAMPS[STAMPS.length-1];
     last_stamp.grid.reverse();
-    render_stamps();    
+    render_stamps();
 }
 
 function recolor_stamp() {
@@ -576,7 +576,7 @@ function scale_stamp() {
         }
     
         STAMPS.push(new_grid);
-    }  
+    }
     render_stamps();
 }
 
@@ -688,4 +688,9 @@ $(document).ready(function () {
         }
     });
     randomTask();
+});
+
+$(window).on('load',function(){
+    $('#myModal').modal('show');
+    // add_stamp();
 });

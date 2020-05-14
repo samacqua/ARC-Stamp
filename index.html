@@ -19,6 +19,7 @@
 
   <!-- jQuery library -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
   <script src="js/fire.js"></script>
   <script src="js/common.js"></script>
@@ -34,14 +35,25 @@
 
 <body>
 
-  <!-- <div id="modal_bg">
-    <div id="modal">
-      <div>Welcome to the ARC testing interface. <br /> Choose a task file to start, or click on "Random task" to load one from the ARC project on github.</div>
-      <br />
-      <input type="file" class="load_task"/>
-      <button onclick="randomTask()" id="random_task_btn">Random task</button>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalCenterTitle">Welcome to the ARC Stamping Interface!</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Upload a task file to start, or click on "Random task" to load one from the ARC project on github. Then, create your stamps and reconstruct the task with the stamps!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
-  </div> -->
+  </div>
 
   <div class="container-fluid">
     <div class="row">
