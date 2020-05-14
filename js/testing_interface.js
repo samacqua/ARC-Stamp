@@ -459,9 +459,9 @@ function render_stamp(stamp_id, stamp_grid) {
     new_stamp_use.click(function(event){
         CUR_STAMP = stamp_id;
         // clear other butotn to white
-        $(".use_stamp_button").css("background-color", "rgba(76, 175, 80,0.5)");
+        $(".use_stamp_button").css({"background-color":"rgba(76, 175, 80,0.5)", "font-weight": "normal", "font-size": "10px"});
         // set self color to green
-        $(this).css("background-color", "#rgba(76, 175, 89,1)");
+        $(this).css({"background-color":"rgb(56, 155, 69)", "font-weight": "bold", "font-size": "14px"});
     });
 
     // make a container that wraps the use_stamp button and the stamp itself

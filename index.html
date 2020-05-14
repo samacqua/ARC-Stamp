@@ -43,24 +43,24 @@
     </div>
   </div> -->
 
-  <div class="container-fluid"> 
+  <div class="container-fluid">
     <div class="row">
       <div class="col-md-4">
         <h2>Task and Solution</h2>
 
         <div id="load_task_control_btns">
-          <label for="load_task_file_input">Load a task JSON: </label>
-          <input type="file" id="load_task_file_input" class="load_task" style="display: none;" />
-          <input type="button" value="Browse..." onclick="document.getElementById('load_task_file_input').click();" />
-          <button onclick="randomTask()" id="random_task_btn">Random...</button>
+          <button value="Browse..." onclick="document.getElementById('load_task_file_input').click();" >Load Task JSON</button>
+          <button onclick="randomTask()" id="random_task_btn">Random JSON</button>
           <p>
-            <label id="task_name" for="random_task_btn"> Task name: </label>
+            <label id="task_name" for="random_task_btn" style="margin: 5px 0px; "> Task name: </label>
+            <br/>
+            <label id="is_solved">Waiting for Info about Labelling...</label>
           </p>
         </div>
         <div id="error_display"></div>
         <div id="info_display"></div>
 
-        <h4 id="is_solved">Waiting for Info about Labelling...</h4>
+        
         <div id="task_preview"></div>
       </div>
 

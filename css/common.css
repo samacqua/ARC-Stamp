@@ -72,7 +72,7 @@ h2 {
 }
 
 button {
-    background-color: rgb(76, 175, 80);
+    background-color: rgb(76, 175, 89);
     border: none;
     color: white;
     padding: 2px 5px;
@@ -92,6 +92,10 @@ button:hover {
 #add_stamp {
     font-weight: bold;
     padding: 2px 15px;
+}
+
+p {
+    margin: 0px;
 }
 
 /*Selectable*/
