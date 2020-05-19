@@ -6,28 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ARC labeling interface</title>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- Just to silence warning about not having icon -->
+  <link rel="shortcut icon" href="#" />
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
 
-  <!-- Bootstrap -->
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
 
+  <!-- JS Libraries -->
   <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <!-- Bootstrap JS (must be listed after jQuery) -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
+  <!-- JS files -->
   <script src="js/fire.js"></script>
   <script src="js/common.js"></script>
   <script src="js/testing_interface.js"></script>
 
+  <!-- CSS files -->
   <link rel="stylesheet" type="text/css" href="css/common.css" />
   <link rel="stylesheet" type="text/css" href="css/testing_interface.css" />
 
+  <!-- Font reference -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
 </head>
 
@@ -55,18 +64,74 @@
     </div>
   </div>
 
-  <div class="container-fluid">
+  <!-- Task browsing modal -->
+  <div class="modal fade" id="browse-tasks-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalLongTitle">List of Tasks</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <table id="table" data-height="460">
+          <thead>
+              <tr>
+                  <th scope="col" data-field="number">Task #</th>
+                  <th scope="col" data-field="name">Task ID</th>
+                  <th scope="col" data-field="stamped">Stamped?</th>
+                  <th scope="col">Select</th>
+              </tr>
+          </thead>
+          <tbody class="table"></tbody>
+        </table>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submission Modal -->
+  <div class="modal fade" id="submission-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalCenterTitle">Stamp Submission</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Before you submit, please leave a message about how you thought about the problem.</label>
+            <textarea class="form-control" id="annotation-input" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="store_parse_current_info()" class="btn btn-primary" data-dismiss="modal">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid"> 
     <div class="row">
       <div class="col-md-4">
+
         <h2>Task and Solution</h2>
 
         <div id="load_task_control_btns">
-          <button value="Browse..." onclick="document.getElementById('load_task_file_input').click();" >Load Task JSON</button>
-          <button onclick="randomTask()" id="random_task_btn">Random JSON</button>
+          <button onclick="randomTask()" id="random_task_btn">Random Task</button>
+          <button onclick="browse_tasks()" id="browse_tasks_btn" data-toggle="modal" data-target="#browse-tasks-modal">Browse Tasks</button>
+          <button onclick="download_stamps()" id="download_stamps">Download Stamps JSON</button>
           <p>
             <label id="task_name" for="random_task_btn" style="margin: 5px 0px; "> Task name: </label>
             <br/>
             <label id="is_solved">Waiting for Info about Labelling...</label>
+            <button onclick="load_stamped()" id="load_stamped_btn">Load Task Stamp</button>
           </p>
         </div>
         <div id="error_display"></div>
@@ -81,13 +146,13 @@
 
         <div id="toolbar">
           <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked />
-          <label for="tool_edit">Edit</label>
-
-          <input type="radio" id="tool_select" name="tool_switching" value="select" />
-          <label for="tool_select">Select</label>
+          <label for="tool_edit">Edit Current Stamp</label>
 
           <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill" />
-          <label for="tool_floodfill">Flood fill</label>
+          <label for="tool_floodfill">Flood Fill</label>
+
+          <input type="radio" id="tool_select" name="tool_switching" value="select" />
+          <label for="tool_select">Copy and Paste</label>
 
           <div id="symbol_picker">
             <div class="symbol_preview symbol_0 selected-symbol-preview" symbol="0"></div>
@@ -104,22 +169,23 @@
           </div>
         </div>
 
-        <div id="list_of_stamps"></div>
-
         <div id="editor_grid_control_btns">
-          <div id="resize_control_btns">
             <label for="output_grid_size">New stamp size: </label>
             <input type="text" id="stamp_size" class="grid_size_field" name="size" value="3x3" />
             <button onclick="add_stamp()" id="add_stamp">add</button>
             <br />
             <button onclick="remove_stamp()" id="remove_stamp">remove</button>
-            <button onclick="copy_stamp()" id="copy_stamp">copy</button>
+            <button onclick="copy_stamp()" id="copy_stamp">duplicate</button>
             <button onclick="rotate_stamp()" id="rotate_stamp">rotate</button>
             <button onclick="flip_stamp()" id="flip_stamp">flip</button>
             <button onclick="recolor_stamp()" id="recolor_stamp"> recolor </button>
-            <button onclick="scale_stamp()" id="scale_stamp">scale</button>
-          </div>
+            <button onclick="scale_stamp_up()" id="scale_stamp_up">scale up</button>
+            <button onclick="scale_stamp_down()">scale down</button>
         </div>
+
+        <div id="list_of_stamps"></div>
+
+        
 
       </div>
 

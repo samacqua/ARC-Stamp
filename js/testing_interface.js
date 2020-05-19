@@ -40,7 +40,7 @@ function resetTask() {
 function refreshEditionGrid(jqGrid, dataGrid) {
     fillJqGridWithData(jqGrid, dataGrid);
     setUpEditionGridListeners(jqGrid);
-    fitCellsToContainer(jqGrid, dataGrid.height, dataGrid.width, EDITION_GRID_HEIGHT, EDITION_GRID_HEIGHT);
+    fitCellsToContainer(jqGrid, dataGrid.height, dataGrid.width, EDITION_GRID_HEIGHT, EDITION_GRID_WIDTH);
     initializeSelectable();
 }
 
@@ -148,12 +148,12 @@ function fillPairPreview(pairId, inputGrid, outputGrid) {
     }
     var jqInputGrid = pairSlot.find('.input_preview');
     if (!jqInputGrid.length) {
-        jqInputGrid = $('<div class="input_preview"></div>');
+        jqInputGrid = $('<div class="input_preview selectable_grid"></div>');
         jqInputGrid.appendTo(pairSlot);
     }
     var jqOutputGrid = pairSlot.find('.output_preview');
     if (!jqOutputGrid.length) {
-        jqOutputGrid = $('<div class="output_preview"></div>');
+        jqOutputGrid = $('<div class="output_preview selectable_grid"></div>');
         jqOutputGrid.appendTo(pairSlot);
     }
     TARGETS[pairId] = [inputGrid, outputGrid];
@@ -170,18 +170,22 @@ function check_reconstruction() {
         let same_input = grid_equal(REC[key][0], TARGETS[key][0]);
         let same_output = grid_equal(REC[key][1], TARGETS[key][1]);
         if (same_input != true) {
-            alert(`not same on input ${key} on ${[same_input[1], same_input[0]]}`);
+            alert(`Your input for task ${parseInt(key)+1} does not match the correct output on coordinates (${[same_input[1], same_input[0]]}), where (0,0) is top left.`);
             all_reconstruct_good = false;
         }
         if (same_output != true) {
-            alert(`not same on output ${key} on ${[same_output[1], same_output[0]]}`);
+            alert(`Your output for task ${parseInt(key)+1} does not match the correct output on coordinates (${[same_input[1], same_input[0]]}), where (0,0) is top left.`);
             all_reconstruct_good = false;
         }
     });
     if (all_reconstruct_good){
-        alert(`evertyhing same, attempting to save on server of parse ${TASK_NAME}`);
-        store_parse(TASK_NAME, STAMPS, ACTION_SEQUENCE);
+        $('#submission-modal').modal('show');
     }
+}
+
+function store_parse_current_info() {
+    let annotation = $.trim($("#annotation-input").val());
+    store_parse(TASK_NAME, STAMPS, ACTION_SEQUENCE, annotation);
 }
 
 function fillPairReconstruction(pairId, inputGrid, outputGrid) {
@@ -198,22 +202,14 @@ function fillPairReconstruction(pairId, inputGrid, outputGrid) {
     }
     var jqInputGrid = pairSlot.find('.input_preview');
     if (!jqInputGrid.length) {
-        jqInputGrid = $(`<div class="input_preview" id="input_${pairId}"></div>`);
+        jqInputGrid = $(`<div class="input_preview selectable_grid" id="input_${pairId}"></div>`);
         jqInputGrid.appendTo(pairSlot);
     }
     var jqOutputGrid = pairSlot.find('.output_preview');
     if (!jqOutputGrid.length) {
-        jqOutputGrid = $(`<div class="output_preview" id="output_${pairId}"></div>`);
+        jqOutputGrid = $(`<div class="output_preview selectable_grid" id="output_${pairId}"></div>`);
         jqOutputGrid.appendTo(pairSlot);
     }
-
-    // fillJqGridWithData(jqInputGrid, inputGrid);
-    // setUpReconstructionGridListeners(jqInputGrid);
-    // fitCellsToContainer(jqInputGrid, inputGrid.height, inputGrid.width, 200, 200);
-
-    // fillJqGridWithData(jqOutputGrid, outputGrid);
-    // setUpReconstructionGridListeners(jqOutputGrid);
-    // fitCellsToContainer(jqOutputGrid, outputGrid.height, outputGrid.width, 200, 200);
 }
 
 function undo_stamp_placement() {
@@ -222,7 +218,7 @@ function undo_stamp_placement() {
 }
 
 function run_action_sequence() {
-    // wipe all the reconstruction grids blank !
+    // wipe all the reconstruction grids blank ! 
     Object.keys(REC).forEach(function(key) {
         const inputGrid = REC[key][0];
         const outputGrid = REC[key][1];
@@ -250,7 +246,7 @@ function run_action_sequence() {
         console.log("HFIKDSJFKDSL");
         // place stamp at x,y of rec
         apply_stamp(rec_grid, xx, yy, stamp_grid);
-    });
+    });      
 
     $('#reconstruction_text').html(ACTION_SEQUENCE.map(a => a.join(",")).join("] p["));
     synch_reconstruction();
@@ -293,20 +289,11 @@ function loadJSONTask(train, test) {
         fillPairReconstruction(i, input_grid, output_grid);
     }
     synch_reconstruction();
-    // for (var i=0; i < test.length; i++) {
-    //     pair = test[i];
-    //     TEST_PAIRS.push(pair);
-    // }
-    // values = TEST_PAIRS[0]['input'];
-    // CURRENT_INPUT_GRID = convertSerializedGridToGridObject(values)
-    // fillTestInput(CURRENT_INPUT_GRID);
-    // CURRENT_TEST_PAIR_INDEX = 0;
-    // $('#current_test_input_id_display').html('1');
-    // $('#total_test_input_count_display').html(test.length);
+    add_stamp()
 }
 
 function display_task_name(task_name, task_index, number_of_tasks) {
-    big_space = '&nbsp;'.repeat(4);
+    big_space = '&nbsp;'.repeat(4); 
     document.getElementById('task_name').innerHTML = (
         'Task name:' + big_space + task_name + big_space + (
             task_index===null ? '' :
@@ -425,16 +412,19 @@ function initializeSelectable() {
         $('.selectable_grid').selectable('destroy');
     }
     catch (e) {
+        console.log("Issue invoking the selectable destroy method")
     }
     toolMode = $('input[name=tool_switching]:checked').val();
     if (toolMode == 'select') {
         infoMsg('Select some cells and click on a color to fill in, or press C to copy');
+        
         $('.selectable_grid').selectable(
             {
                 autoRefresh: false,
                 filter: '> .row > .cell',
                 start: function(event, ui) {
                     $('.ui-selected').each(function(i, e) {
+                        console.log(i + ":" + e);
                         $(e).removeClass('ui-selected');
                     });
                 }
@@ -443,11 +433,10 @@ function initializeSelectable() {
     }
 }
 
-// Evan's Code
 function render_stamp(stamp_id, stamp_grid) {
     let height = stamp_grid.height;
     let width = stamp_grid.width;
-    var new_stamp = $('<div id="stamp_' + stamp_id + '" class="stamp" index="' + stamp_id + `">stamp ${stamp_id}</div>`);
+    var new_stamp = $('<div id="stamp_' + stamp_id + '" class="selectable_grid" index="' + stamp_id + `">stamp ${stamp_id}</div>`);
 
     refreshEditionGrid(new_stamp, stamp_grid);
     let show_stamp_size = Math.min(Math.max(30*height, 30*width), 400);
@@ -455,13 +444,23 @@ function render_stamp(stamp_id, stamp_grid) {
     fitCellsToContainer(new_stamp, height, width, show_stamp_size, show_stamp_size);
 
     // make the use stamp button ========
-    const new_stamp_use = $(`<button id="stamp_use_${stamp_id}" class="use_stamp_button">use stamp ${stamp_id}</button>`);
+    var new_stamp_use = $(`<button id="stamp_use_${stamp_id}" class="use_stamp_button">use stamp ${stamp_id}</button>`);
+    new_stamp_use.click(function(event){
+        CUR_STAMP = stamp_id;
+    });
+    if (stamp_id == CUR_STAMP) {
+        new_stamp_use = $(`<button id="stamp_use_${stamp_id}" class="use_stamp_button_selected">use stamp ${stamp_id}</button>`);
+    } 
     new_stamp_use.click(function(event){
         CUR_STAMP = stamp_id;
         // clear other butotn to white
-        $(".use_stamp_button").css({"background-color":"rgba(76, 175, 80,0.5)", "font-weight": "normal", "font-size": "10px"});
-        // set self color to green
-        $(this).css({"background-color":"rgb(56, 155, 69)", "font-weight": "bold", "font-size": "14px"});
+        for (i=0;i<STAMPS.length;i++) {
+            console.log(document.getElementById(`stamp_use_${stamp_id}`).classList);
+            document.getElementById(`stamp_use_${i}`).classList.remove('use_stamp_button_selected');
+            document.getElementById(`stamp_use_${i}`).classList.add('use_stamp_button');
+        }
+        document.getElementById(`stamp_use_${stamp_id}`).classList.remove('use_stamp_button');
+        document.getElementById(`stamp_use_${stamp_id}`).classList.add('use_stamp_button_selected');
     });
 
     // make a container that wraps the use_stamp button and the stamp itself
@@ -472,10 +471,18 @@ function render_stamp(stamp_id, stamp_grid) {
     stamp_container.appendTo('#list_of_stamps');
 }
 
+function select_stamp(stamp_id, select_button) {
+    CUR_STAMP = stamp_id;
+    // clear other butotn to white
+    $(".use_stamp_button").css({"background-color":"rgba(76, 175, 80,0.5)", "font-weight": "normal", "font-size": "10px"});
+    // set self color to green
+    $(select_button).css({"background-color":"rgb(56, 155, 69)", "font-weight": "bold", "font-size": "14px"});
+}
+
 // re-render all the stamps
 function render_stamps() {
     $('#list_of_stamps').html('');
-    for (var ii = 0; ii < STAMPS.length; ii ++){
+    for (var ii = STAMPS.length-1; ii >= 0; ii --){
         render_stamp(ii, STAMPS[ii]);
     }
 }
@@ -490,14 +497,16 @@ function add_stamp() {
     let width = size[1];
     let blank_grid = transparent_grid(height, width);
     STAMPS.push(blank_grid);
+    CUR_STAMP = STAMPS.length - 1;
     // step 2 : re-render all the stamps
     render_stamps();
 }
 
 function copy_stamp() {
-    let last_stamp = STAMPS[STAMPS.length-1];
-    let last_stamp_again = JSON.parse(JSON.stringify(last_stamp));
-    STAMPS.push(last_stamp_again);
+    let current_stamp = STAMPS[CUR_STAMP];
+    let current_stamp_again = JSON.parse(JSON.stringify(current_stamp));
+    STAMPS.push(current_stamp_again);
+    CUR_STAMP = STAMPS.length - 1;
     render_stamps();
 }
 
@@ -512,76 +521,80 @@ function rotateRight(array) {
     return result;
 }
 function rotate_stamp() {
-    let last_stamp = STAMPS[STAMPS.length-1];
-    let orig_height = last_stamp.height;
-    let orig_width = last_stamp.width;
-    let rot_stamp_grid = rotateRight(last_stamp.grid);
-    last_stamp.height = orig_width;
-    last_stamp.width = orig_height;
-    last_stamp.grid = rot_stamp_grid;
+    let current_stamp = STAMPS[CUR_STAMP];
+    let orig_height = current_stamp.height;
+    let orig_width = current_stamp.width;
+    let rot_stamp_grid = rotateRight(current_stamp.grid);
+    current_stamp.height = orig_width;
+    current_stamp.width = orig_height;
+    current_stamp.grid = rot_stamp_grid;
     render_stamps();
 }
 
 function flip_stamp() {
-    let last_stamp = STAMPS[STAMPS.length-1];
-    last_stamp.grid.reverse();
-    render_stamps();
+    let current_stamp = STAMPS[CUR_STAMP];
+    current_stamp.grid.reverse();
+    render_stamps();    
 }
 
 function recolor_stamp() {
-    let last_stamp = STAMPS[STAMPS.length-1];
-    for (var ii = 0; ii < last_stamp.height; ii++) {
-        for (var jj = 0; jj < last_stamp.width; jj++) {
-            if (last_stamp.grid[ii][jj] != 10) {
-            last_stamp.grid[ii][jj] = (last_stamp.grid[ii][jj] + 1 ) % 10;
+    let current_stamp = STAMPS[CUR_STAMP];
+    for (var ii = 0; ii < current_stamp.height; ii++) {
+        for (var jj = 0; jj < current_stamp.width; jj++) {
+            if (current_stamp.grid[ii][jj] != 10) {
+                current_stamp.grid[ii][jj] = (current_stamp.grid[ii][jj] + 1 ) % 10;
             }
         }
     }
     render_stamps();
 }
 
-function scale_stamp() {
-    let last_stamp = STAMPS.pop();
-    og_height = last_stamp.height;
-    og_width = last_stamp.width;
+function scale_stamp_up() {
+    let current_stamp = STAMPS[CUR_STAMP];
+    og_height = current_stamp.height;
+    og_width = current_stamp.width;
 
-    if (height <= 4 && width <= 4) {
-        let height = og_height*og_height;
-        let width = og_width*og_width;
+    let height = og_height*2;
+    let width = og_width*2;
 
-        let new_grid = transparent_grid(height, width);
+    let new_grid = transparent_grid(height, width);
 
-        for (var ii = 0; ii < og_height; ii++) {
-            for (var jj = 0; jj < og_width; jj++) {
-                for (var ww=0; ww < og_width; ww++) {
-                    for (var hh=0; hh < og_height; hh++) {
-                        new_grid.grid[ii*og_height+hh][jj*og_width+ww] = last_stamp.grid[ii][jj];
-                    }
-                }
-            }
+    for (var ii = 0; ii < og_height; ii++) {
+        for (var jj = 0; jj < og_width; jj++) {
+            new_grid.grid[ii*2][jj*2] = current_stamp.grid[ii][jj]
+            new_grid.grid[ii*2+1][jj*2] = current_stamp.grid[ii][jj]
+            new_grid.grid[ii*2][jj*2+1] = current_stamp.grid[ii][jj]
+            new_grid.grid[ii*2+1][jj*2+1] = current_stamp.grid[ii][jj]
         }
-    
-        STAMPS.push(new_grid);
-    // if scale 2x2 twice, won't go back to 2x2, only from 8x8 to 4x4
-    } else {
-        let height = Math.floor(Math.sqrt(og_height));
-        let width = Math.floor(Math.sqrt(og_width));
-
-        let new_grid = transparent_grid(height, width);
-
-        for (var ii = 0; ii < height; ii++) {
-            for (var jj = 0; jj < width; jj++) {
-                new_grid.grid[ii][jj] = (last_stamp.grid[ii*height][jj*width]);
-            }
-        }
-    
-        STAMPS.push(new_grid);
     }
+
+    STAMPS[CUR_STAMP] = new_grid;
+    render_stamps();
+}
+
+function scale_stamp_down() {
+    let current_stamp = STAMPS[CUR_STAMP];
+    og_height = current_stamp.height;
+    og_width = current_stamp.width;
+
+    let height = Math.floor(og_height/2);
+    let width = Math.floor(og_width/2);
+
+    let new_grid = transparent_grid(height, width);
+
+    for (var ii = 0; ii < height; ii++) {
+        for (var jj = 0; jj < width; jj++) {
+            new_grid.grid[ii][jj] = (current_stamp.grid[ii*2][jj*2]);
+        }
+    }
+
+    STAMPS[CUR_STAMP] = new_grid;
     render_stamps();
 }
 
 function remove_stamp() {
-    STAMPS.pop();
+    STAMPS.splice(CUR_STAMP, 1);
+    CUR_STAMP = STAMPS.length - 1;
     render_stamps();
 }
 
@@ -589,6 +602,7 @@ function remove_stamp() {
 
 $(document).ready(function () {
     $('#symbol_picker').find('.symbol_preview').click(function(event) {
+        console.log("Yiupp");
         symbol_preview = $(event.target);
         $('#symbol_picker').find('.symbol_preview').each(function(i, preview) {
             $(preview).removeClass('selected-symbol-preview');
@@ -597,6 +611,7 @@ $(document).ready(function () {
 
         toolMode = $('input[name=tool_switching]:checked').val();
         if (toolMode == 'select') {
+            console.log("Select!");
             $('.edition_grid').find('.ui-selected').each(function(i, cell) {
                 symbol = getSelectedSymbol();
                 setCellSymbol($(cell), symbol);
@@ -625,8 +640,11 @@ $(document).ready(function () {
         if (event.which == 67) {
             // Press C
 
+            console.log("Pressed c");
+
             selected = $('.ui-selected');
             if (selected.length == 0) {
+                console.log("selected length 0");
                 return;
             }
 
@@ -646,7 +664,7 @@ $(document).ready(function () {
                 errorMsg('No data to paste.');
                 return;
             }
-            selected = $('.edition_grid').find('.ui-selected');
+            selected = $('.ui-selected');
             if (selected.length == 0) {
                 errorMsg('Select a target cell on the output grid.');
                 return;
@@ -692,5 +710,4 @@ $(document).ready(function () {
 
 $(window).on('load',function(){
     $('#myModal').modal('show');
-    // add_stamp();
 });

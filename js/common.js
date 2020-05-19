@@ -71,10 +71,16 @@ function apply_stamp(rec_grid, x, y, stamp_grid){
     }
 }
 
+// no need to have grid param, changed way func is called, but lazy
 function floodfillFromLocation(grid, i, j, symbol) {
+
+    let last_stamp = STAMPS[STAMPS.length-1];
+
     i = parseInt(i);
     j = parseInt(j);
     symbol = parseInt(symbol);
+
+    grid = last_stamp.grid
 
     target = grid[i][j];
     
@@ -83,6 +89,7 @@ function floodfillFromLocation(grid, i, j, symbol) {
     }
 
     function flow(i, j, symbol, target) {
+        console.log("Calling flow()");
         if (i >= 0 && i < grid.length && j >= 0 && j < grid[i].length) {
             if (grid[i][j] == target) {
                 grid[i][j] = symbol;
@@ -94,6 +101,9 @@ function floodfillFromLocation(grid, i, j, symbol) {
         }
     }
     flow(i, j, symbol, target);
+
+    grid = convertSerializedGridToGridObject(grid)
+    render_stamps();
 }
 
 function parseSizeTuple(size) {
