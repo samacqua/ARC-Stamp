@@ -29,6 +29,22 @@
     visibility: hidden;
 }
 
+#reconstruction_annotation {
+    background-color: rgb(200, 200, 200);
+    padding-bottom: 10px;
+    visibility: hidden;
+    display: none;
+}
+
+#reconstruction_annotation_p {
+    background-color: rgb(200, 200, 200);
+}
+
+#reconstruction_annotation_h4 {
+    background-color: rgb(200, 200, 200);
+    font-weight: bold;
+}
+
 /* Stamp Creator */
 
 #list_of_stamps {
@@ -97,3 +113,11 @@
     background-color: #d5d5d5;
 }
 
+#task_reconstruction {
+    background-color: rgb(200, 200, 200);
+    font-size: 40;
+}
+
+#reconstruction_btns {
+    padding-bottom: 10px;
+}

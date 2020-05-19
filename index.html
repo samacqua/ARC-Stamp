@@ -134,6 +134,7 @@
             <button onclick="load_stamped()" id="load_stamped_btn">Load Task Stamp</button>
           </p>
         </div>
+
         <div id="error_display"></div>
         <div id="info_display"></div>
 
@@ -191,12 +192,20 @@
 
       <div class="col-md-4">
         <h2>The Reconstruction</h2>
-        <button onclick="undo_stamp_placement()" id="undo_stamp_placement">
-          Undo Last Stamp Placement
-        </button>
-        <button onclick="check_reconstruction()" id="check_reconstruction">
-          Check and Submit
-        </button>
+        <div id="reconstruction_annotation">
+          <h4 id="reconstruction_annotation_h4">Annotation From Last Stamp</h4>
+          <p id="reconstruction_annotation_p"></p>
+        </div>
+
+        <div id="reconstruction_btns">
+          <button onclick="undo_stamp_placement()" id="undo_stamp_placement">
+            Undo Last Stamp Placement
+          </button>
+          <button onclick="check_reconstruction()" id="check_reconstruction">
+            Check and Submit
+          </button>
+        </div>
+
         <div id="task_reconstruction"></div>
       </div>
 

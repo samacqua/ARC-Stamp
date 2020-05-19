@@ -52,10 +52,10 @@ function retrieve_parse(problem_id) {
         console.log(stats);
         if (stats == null) {
             $("#is_solved").html("This task has not been labeled yet :(");
-            $("#load_stamped_btn").css("visibility", "hidden");
+            $("#load_stamped_btn").css({"visibility": "hidden"});
         } else {
             $("#is_solved").html("This task has been labeled :)");
-            $("#load_stamped_btn").css("visibility", "visible");
+            $("#load_stamped_btn").css({"visibility": "visible"});
         }
     });
 }
@@ -90,15 +90,6 @@ function download_file(blob,name) {
 }
 
 function is_stamped(task_id) {
-    // let ref_loc = '/arc-stamp'
-    // fbase.ref(ref_loc).once('value').then(function(snapshot) {
-    //     if (snapshot.hasChild(task_id)) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // });
-
     let ref_tot = fbase.ref(`arc-stamp/${task_id}`);
     return new Promise(function(resolve,refuse) {
         ref_tot.on("value", function(snapshot) {
@@ -184,5 +175,47 @@ function browse_tasks() {
     })
     .error(function(){
       errorMsg('Error loading task list');
+    });
+}
+
+function load_stamped() {
+    console.log(TASK_NAME);
+    let ref_tot = fbase.ref(`arc-stamp/${TASK_NAME}`);
+    ref_tot.once('value').then(function(snapshot) {
+        data = snapshot.val();
+        snapshot.forEach(function(childSnapshot) {
+            var key = childSnapshot.key;
+            console.log(key);
+            var childData = childSnapshot.val();
+
+            STAMPS = [];
+            stamps = childData.stamps;
+            for (k=0;k<stamps.length;k++) {
+                stamp = stamps[k];
+                height = stamp.length;
+                width = stamp[0].length;
+
+                let new_grid = transparent_grid(height, width);
+                for (var ii = 0; ii < height; ii++) {
+                    for (var jj = 0; jj < width; jj++) {
+                        new_grid.grid[ii][jj] = stamp[ii][jj];
+                    }
+                }
+                STAMPS.push(new_grid);
+                render_stamps();
+            }
+            CUR_STAMP = STAMPS.length - 1;
+
+            action_sequence = childData.action_sequence;
+            ACTION_SEQUENCE = action_sequence;
+            run_action_sequence();
+
+            if (childSnapshot.child("annotation").exists()) {
+                annotation = childData.annotation;
+                $("#is_solved").html("This task has not been labeled yet :(");
+                $('#reconstruction_annotation_p').html(annotation);
+                $('#reconstruction_annotation').css({"background-color": "rgb(200,20,200)", "display": "inline", "visibility": "visible"});
+            }
+        });
     });
 }
