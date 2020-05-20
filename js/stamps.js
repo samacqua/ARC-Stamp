@@ -235,6 +235,9 @@ function copy_create_new_stamp() {
         x = COPY_PASTE_DATA[d][1] - lowX;
         y = COPY_PASTE_DATA[d][0] - lowY;
         val = COPY_PASTE_DATA[d][2];
+        if (val==0) {
+            val = 10;
+        }
         new_grid.grid[y][x] = val;
     }
 
