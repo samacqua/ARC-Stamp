@@ -1,0 +1,32 @@
+#task_name {
+    margin: 5px 0px;
+}
+
+.pair_preview {
+    height: 15vw;
+    padding: 5px;
+    border-bottom: solid 2px #a1a1a1;
+}
+.input_preview {
+    height: 13vw;
+    width: 13vw;
+    float: left;
+}
+.output_preview {
+    height: 13vw;
+    width: 13vw;
+    float: left;
+    margin-left: 1vw;
+}
+
+#load_task_control_btns {
+    margin-top: 10px;
+    padding: 5px;
+    background-color: rgb(200, 200, 200);
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#load_stamped_btn {
+    visibility: hidden;
+}

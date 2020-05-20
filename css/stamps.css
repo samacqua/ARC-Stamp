@@ -1,0 +1,105 @@
+/*Create Stamp Toolbar*/
+
+.symbol_0 {
+    background-color: #000;
+}
+.symbol_1 {
+    background-color: #0074D9; /* blue */
+}
+.symbol_2 {
+    background-color: #FF4136; /* red */
+}
+.symbol_3 {
+    background-color: #2ECC40; /* green */
+}
+.symbol_4 {
+    background-color: #FFDC00; /* yellow */
+}
+.symbol_5 {
+    background-color: #AAAAAA; /* grey */
+}
+.symbol_6 {
+    background-color: #F012BE; /* fuschia */
+}
+.symbol_7 {
+    background-color: #FF851B; /* orange */
+}
+.symbol_8 {
+    background-color: #7FDBFF; /* teal */
+}
+.symbol_9 {
+    background-color: #870C25; /* brown */
+}
+.symbol_10 {
+    background-color: #FAFAFA; /* transparent */
+}
+
+#add_stamp {
+    font-weight: bold;
+    padding: 2px 15px;
+}
+
+
+
+
+/* Stamp Creator */
+
+#list_of_stamps {
+    width: 35vw;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.stamp_container{
+    display: inline-block;
+    padding: 2vw;
+}
+
+#editor_grid_control_btns {
+    float: left;
+    background: rgb(200, 200, 200);
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+#toolbar {
+    float: left;
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: rgb(200, 200, 200);
+}
+
+#tool_select {
+    margin-left: 8px;
+}
+
+#tool_floodfill {
+    margin-left: 8px;
+}
+
+#symbol_picker {
+    float: left;
+    margin-left: 8px;
+    width: 100%;
+}
+
+.symbol_preview {
+    width: 25px;
+    height: 25px;
+    float: left;
+}
+
+.use_stamp_button {
+    background-color: rgba(76, 175, 80,0.5);
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.use_stamp_button_selected {
+    background-color: rgb(56, 155, 69);
+    font-weight: bold;
+    font-size: 14px;
+}

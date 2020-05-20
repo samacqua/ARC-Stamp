@@ -1,18 +1,3 @@
-
-// var firebaseConfig = {
-//   apiKey: "AIzaSyDz8HP0WftrMi61sncVumipTboEYaTFiqQ",
-//   authDomain: "arc-labels.firebaseapp.com",
-//   databaseURL: "https://arc-labels.firebaseio.com",
-//   projectId: "arc-labels",
-//   storageBucket: "arc-labels.appspot.com",
-//   messagingSenderId: "1061311925293",
-//   appId: "1:1061311925293:web:0624cb2828956364403ca4"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
-// var fbase = firebase.database();
-
-// Your web app's Firebase configuration
 var firebaseConfig = {
     apiKey: "AIzaSyC0L5_b8rV6FDZegKDf4zlGWrFcgnvnCHY",
     authDomain: "arc-stamp.firebaseapp.com",
@@ -22,10 +7,16 @@ var firebaseConfig = {
     messagingSenderId: "936990547280",
     appId: "1:936990547280:web:2b459d4364f70358b4a055",
     measurementId: "G-CBXZEZFYGZ"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  var fbase = firebase.database();
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var fbase = firebase.database();
+
+function store_parse_current_info() {
+    let annotation = $.trim($("#annotation-input").val());
+    store_parse(TASK_NAME, STAMPS, ACTION_SEQUENCE, annotation);
+}
 
 // put stuff into database
 function store_parse(problem_id, stamps, action_sequence, annotation){
@@ -60,18 +51,6 @@ function retrieve_parse(problem_id) {
     });
 }
 
-function download_stamps() {
-    let ref_loc = '/arc-stamp'
-    fbase.ref(ref_loc).once('value').then(function(snapshot) {
-        console.log(snapshot.val());
-        json_stringed = JSON.stringify(snapshot.val());
-            // create the text file as a Blob:
-        var blob = new Blob([json_stringed],{type: "application/json"});
-        // download the file:
-        download_file(blob,"ARC-Stamps.json"); 
-    });
-}
-
 function download_file(blob,name) {
     var url = URL.createObjectURL(blob),
         div = document.createElement("div"),
@@ -89,18 +68,26 @@ function download_file(blob,name) {
     document.body.removeChild(div);
 }
 
+function download_stamps_JSON() {
+    let ref_loc = '/arc-stamp'
+    fbase.ref(ref_loc).once('value').then(function(snapshot) {
+        console.log(snapshot.val());
+        json_stringed = JSON.stringify(snapshot.val());
+            // create the text file as a Blob:
+        var blob = new Blob([json_stringed],{type: "application/json"});
+        // download the file:
+        download_file(blob,"ARC-Stamps.json"); 
+    });
+}
+
 function is_stamped(task_id) {
     let ref_tot = fbase.ref(`arc-stamp/${task_id}`);
     return new Promise(function(resolve,refuse) {
         ref_tot.on("value", function(snapshot) {
             let stats = snapshot.val();
-            console.log("task id : " + task_id);
-            console.log("child : " + stats);
             if (stats == null) {
-                console.log("resolving false");
                 resolve(false);
             } else {
-                console.log("resolving true");
                 resolve(true);
             }
         });
@@ -138,11 +125,9 @@ function browse_tasks() {
 
         Promise.all(promises)
           .then((results) => {
-            console.log("All done", results);
             for (i=0;i<task_list.length;i++) {
                 task = task_list[i];
                 task.stamped = results[i];
-                console.log(task.stamped);
             }
 
             $('#table').bootstrapTable({
@@ -163,7 +148,6 @@ function browse_tasks() {
 
             $(".btn").click(function(){
                 var pageName = $(this).attr('pageName');
-                console.log(pageName);
                 loadTask(pageName);
 
             });
@@ -179,42 +163,46 @@ function browse_tasks() {
 }
 
 function load_stamped() {
-    console.log(TASK_NAME);
     let ref_tot = fbase.ref(`arc-stamp/${TASK_NAME}`);
     ref_tot.once('value').then(function(snapshot) {
         data = snapshot.val();
+
+        // to ensure that only reading one stamping. If there are multiple submissions, could be issue.
+        // TODO: Let user choose which stamping to use if multiple options
+        a = 0;
         snapshot.forEach(function(childSnapshot) {
-            var key = childSnapshot.key;
-            console.log(key);
-            var childData = childSnapshot.val();
+            if (a<1) {
+                var key = childSnapshot.key;
+                var childData = childSnapshot.val();
 
-            STAMPS = [];
-            stamps = childData.stamps;
-            for (k=0;k<stamps.length;k++) {
-                stamp = stamps[k];
-                height = stamp.length;
-                width = stamp[0].length;
+                STAMPS = [];
+                stamps = childData.stamps;
+                for (k=0;k<stamps.length;k++) {
+                    stamp = stamps[k];
+                    height = stamp.length;
+                    width = stamp[0].length;
 
-                let new_grid = transparent_grid(height, width);
-                for (var ii = 0; ii < height; ii++) {
-                    for (var jj = 0; jj < width; jj++) {
-                        new_grid.grid[ii][jj] = stamp[ii][jj];
+                    let new_grid = transparent_grid(height, width);
+                    for (var ii = 0; ii < height; ii++) {
+                        for (var jj = 0; jj < width; jj++) {
+                            new_grid.grid[ii][jj] = stamp[ii][jj];
+                        }
                     }
+                    STAMPS.push(new_grid);
+                    render_stamps();
                 }
-                STAMPS.push(new_grid);
-                render_stamps();
-            }
-            CUR_STAMP = STAMPS.length - 1;
+                CUR_STAMP = STAMPS.length - 1;
 
-            action_sequence = childData.action_sequence;
-            ACTION_SEQUENCE = action_sequence;
-            run_action_sequence();
+                action_sequence = childData.action_sequence;
+                ACTION_SEQUENCE = action_sequence;
+                run_action_sequence();
 
-            if (childSnapshot.child("annotation").exists()) {
-                annotation = childData.annotation;
-                $("#is_solved").html("This task has not been labeled yet :(");
-                $('#reconstruction_annotation_p').html(annotation);
-                $('#reconstruction_annotation').css({"background-color": "rgb(200,20,200)", "display": "inline", "visibility": "visible"});
+                if (childSnapshot.child("annotation").exists()) {
+                    annotation = childData.annotation;
+                    $('#reconstruction_annotation_p').html(annotation);
+                    $('#reconstruction_annotation').css({"background-color": "rgb(200,20,200)", "display": "inline", "visibility": "visible"});
+                }
+                a++;
             }
         });
     });

@@ -28,13 +28,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
 
   <!-- JS files -->
+  <script src="js/grids.js"></script>
+  <script src="js/task.js"></script>
+  <script src="js/stamps.js"></script>
+  <script src="js/reconstruction.js"></script>
   <script src="js/fire.js"></script>
-  <script src="js/common.js"></script>
-  <script src="js/testing_interface.js"></script>
+  <script src="js/start.js"></script>
 
   <!-- CSS files -->
   <link rel="stylesheet" type="text/css" href="css/common.css" />
-  <link rel="stylesheet" type="text/css" href="css/testing_interface.css" />
+  <link rel="stylesheet" type="text/css" href="css/task.css" />
+  <link rel="stylesheet" type="text/css" href="css/stamps.css" />
+  <link rel="stylesheet" type="text/css" href="css/reconstruction.css" />
 
   <!-- Font reference -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
@@ -55,7 +60,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Upload a task file to start, or click on "Random task" to load one from the ARC project on github. Then, create your stamps and reconstruct the task with the stamps!
+          To start, either choose a random task, or browse through the tasks to see which ones need stamping. Then, create your stamps and reconstruct the task with those stamps! You can also download all current stamps as a JSON.
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -126,9 +131,9 @@
         <div id="load_task_control_btns">
           <button onclick="randomTask()" id="random_task_btn">Random Task</button>
           <button onclick="browse_tasks()" id="browse_tasks_btn" data-toggle="modal" data-target="#browse-tasks-modal">Browse Tasks</button>
-          <button onclick="download_stamps()" id="download_stamps">Download Stamps JSON</button>
+          <button onclick="download_stamps_JSON()">Download Stamps JSON</button>
           <p>
-            <label id="task_name" for="random_task_btn" style="margin: 5px 0px; "> Task name: </label>
+            <label id="task_name" for="random_task_btn"> Task name: </label>
             <br/>
             <label id="is_solved">Waiting for Info about Labelling...</label>
             <button onclick="load_stamped()" id="load_stamped_btn">Load Task Stamp</button>
@@ -147,7 +152,7 @@
 
         <div id="toolbar">
           <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked />
-          <label for="tool_edit">Edit Current Stamp</label>
+          <label for="tool_edit">Edit</label>
 
           <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill" />
           <label for="tool_floodfill">Flood Fill</label>
