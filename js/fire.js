@@ -177,7 +177,7 @@ function load_stamped() {
 
                 STAMPS = [];
                 stamps = childData.stamps;
-                for (k=0;k<stamps.length;k++) {
+                for (var k=0;k<stamps.length;k++) {
                     stamp = stamps[k];
                     height = stamp.length;
                     width = stamp[0].length;

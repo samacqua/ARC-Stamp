@@ -7,14 +7,6 @@ $(document).ready(function () {
             $(preview).removeClass('selected-symbol-preview');
         })
         symbol_preview.addClass('selected-symbol-preview');
-
-        toolMode = $('input[name=tool_switching]:checked').val();
-        if (toolMode == 'select') {
-            $('.edition_grid').find('.ui-selected').each(function(i, cell) {
-                symbol = getSelectedSymbol();
-                setCellSymbol($(cell), symbol);
-            });
-        }
     });
 
     $('.edition_grid').each(function(i, jqGrid) {
@@ -45,7 +37,52 @@ $(document).ready(function () {
                 symbol = parseInt($(selected[i]).attr('symbol'));
                 COPY_PASTE_DATA.push([x, y, symbol]);
             }
-            infoMsg('Cells copied! Select a target cell and press V to paste at location.');
+            toolMode = $('input[name=tool_switching]:checked').val();
+            if (toolMode == 'select') {
+                infoMsg('Cells copied! Select a target cell and press V to paste at location.');
+            } else if (toolMode == 'crop') {
+
+
+                console.log(COPY_PASTE_DATA);
+                var lowX = 100;
+                var highX = -100;
+
+                var lowY = 100;
+                var highY = -100;
+                for (var i=0;i<COPY_PASTE_DATA.length;i++) {
+                    let xVal = COPY_PASTE_DATA[i][1];
+                    if (xVal > highX) {
+                        highX = xVal;
+                    }
+                    if (xVal < lowX) {
+                        lowX = xVal;
+                    }
+
+                    let yVal = COPY_PASTE_DATA[i][0];
+                    if (yVal > highY) {
+                        highY = yVal;
+                    }
+                    if (yVal < lowY) {
+                        lowY = yVal;
+                    }
+                }
+
+                height = highY - lowY + 1;
+                width = highX - lowX + 1;
+
+                new_grid = transparent_grid(height, width);
+                console.log(new_grid);
+
+                for (var d=0;d<COPY_PASTE_DATA.length;d++) {
+                    x = COPY_PASTE_DATA[d][1] - lowX;
+                    y = COPY_PASTE_DATA[d][0] - lowY;
+                    val = COPY_PASTE_DATA[d][2];
+                    new_grid.grid[y][x] = val;
+                }
+
+                STAMPS.push(new_grid);
+                render_stamps();
+            }
 
         }
         if (event.which == 86) {

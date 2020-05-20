@@ -5,6 +5,20 @@ var REC = {};
 var STAMPS = [];
 var TASK_NAME = "";
 
+function add_stamp() {
+    // make the stamp =======
+
+    // step 1 : add a blank stamp of the right size to the canvas
+    let size = parseSizeTuple($('#stamp_size').val());
+    let height = size[0];
+    let width = size[1];
+    let blank_grid = transparent_grid(height, width);
+    STAMPS.push(blank_grid);
+    CUR_STAMP = STAMPS.length - 1;
+    // step 2 : re-render all the stamps
+    render_stamps();
+}
+
 function render_stamp(stamp_id, stamp_grid) {
     let height = stamp_grid.height;
     let width = stamp_grid.width;
@@ -106,21 +120,6 @@ function setCellSymbol(cell, symbol, action_sequence=false) {
     }
 }
 
-function add_stamp() {
-
-    // make the stamp =======
-
-    // step 1 : add a blank stamp of the right size to the canvas
-    let size = parseSizeTuple($('#stamp_size').val());
-    let height = size[0];
-    let width = size[1];
-    let blank_grid = transparent_grid(height, width);
-    STAMPS.push(blank_grid);
-    CUR_STAMP = STAMPS.length - 1;
-    // step 2 : re-render all the stamps
-    render_stamps();
-}
-
 function copy_stamp() {
     let current_stamp = STAMPS[CUR_STAMP];
     let current_stamp_again = JSON.parse(JSON.stringify(current_stamp));
@@ -156,58 +155,43 @@ function flip_stamp() {
     render_stamps();    
 }
 
-function recolor_stamp() {
+function scale_stamp() {
     let current_stamp = STAMPS[CUR_STAMP];
-    for (var ii = 0; ii < current_stamp.height; ii++) {
-        for (var jj = 0; jj < current_stamp.width; jj++) {
-            if (current_stamp.grid[ii][jj] != 10) {
-                current_stamp.grid[ii][jj] = (current_stamp.grid[ii][jj] + 1 ) % 10;
+
+    let mult = current_stamp.mult;
+    og_height = current_stamp.og_height;
+    og_width = current_stamp.og_height;
+    new_height = og_height*mult;
+    new_width = og_width*mult;
+
+    let copy_grid = current_stamp.og_grid;
+
+    current_stamp.height = new_height;
+    current_stamp.width = new_height;
+
+    current_stamp.grid = new Array(new_height);
+    for (var i = 0; i < new_height; i++){
+        current_stamp.grid[i] = new Array(new_width);
+    }
+
+    for (var i = 0; i < og_height; i++){
+        for (var j = 0; j < og_width; j++){
+            for (var m1=0; m1<mult;m1++) {
+                for (var m2=0; m2<mult;m2++) {
+                    // console.log(m1, m2);
+                    console.log(i+m1, j+m2);
+                    current_stamp.grid[i*mult+m1][j*mult+m2] = copy_grid[i][j];
+                }
             }
         }
     }
-    render_stamps();
-}
-
-function scale_stamp_up() {
-    let current_stamp = STAMPS[CUR_STAMP];
-    og_height = current_stamp.height;
-    og_width = current_stamp.width;
-
-    let height = og_height*2;
-    let width = og_width*2;
-
-    let new_grid = transparent_grid(height, width);
-
-    for (var ii = 0; ii < og_height; ii++) {
-        for (var jj = 0; jj < og_width; jj++) {
-            new_grid.grid[ii*2][jj*2] = current_stamp.grid[ii][jj]
-            new_grid.grid[ii*2+1][jj*2] = current_stamp.grid[ii][jj]
-            new_grid.grid[ii*2][jj*2+1] = current_stamp.grid[ii][jj]
-            new_grid.grid[ii*2+1][jj*2+1] = current_stamp.grid[ii][jj]
-        }
+    if (mult < 5) {
+        current_stamp.mult += 1;
+    } else {
+        current_stamp.mult = 1;
     }
-
-    STAMPS[CUR_STAMP] = new_grid;
-    render_stamps();
-}
-
-function scale_stamp_down() {
-    let current_stamp = STAMPS[CUR_STAMP];
-    og_height = current_stamp.height;
-    og_width = current_stamp.width;
-
-    let height = Math.floor(og_height/2);
-    let width = Math.floor(og_width/2);
-
-    let new_grid = transparent_grid(height, width);
-
-    for (var ii = 0; ii < height; ii++) {
-        for (var jj = 0; jj < width; jj++) {
-            new_grid.grid[ii][jj] = (current_stamp.grid[ii*2][jj*2]);
-        }
-    }
-
-    STAMPS[CUR_STAMP] = new_grid;
+    console.log(current_stamp.grid);
+    STAMPS[CUR_STAMP] = current_stamp;
     render_stamps();
 }
 

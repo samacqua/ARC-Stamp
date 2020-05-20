@@ -1,8 +1,9 @@
 class Grid {
-    constructor(height, width, values) {
+    constructor(height, width, values, original=true, mult=2) {
         // console.log(values);
         this.height = height;
         this.width = width;
+
         this.grid = new Array(height);
         for (var i = 0; i < height; i++){
             this.grid[i] = new Array(width);
@@ -13,6 +14,14 @@ class Grid {
                     this.grid[i][j] = 0;
                 }
             }
+        }
+
+        // used for scaling stamps
+        this.mult = mult;
+        if (original) {
+            this.og_height = height;
+            this.og_width = width;
+            this.og_grid = this.grid;
         }
     }
 }
@@ -143,6 +152,8 @@ function setUpEditionGridListeners(jqGrid) {
         else if (mode == 'edit') {
             // Else: fill just this cell.
             console.log(cell.attr('x'));
+
+            // true causing site to slow a bit
             setCellSymbol(cell, symbol, true);
         }
 
@@ -250,7 +261,7 @@ function initializeSelectable() {
         console.log("Issue invoking the selectable destroy method")
     }
     toolMode = $('input[name=tool_switching]:checked').val();
-    if (toolMode == 'select') {
+    if (toolMode == 'select' || toolMode == 'crop') {
         infoMsg('Select some cells and click on a color to fill in, or press C to copy');
         
         $('.selectable_grid').selectable(
@@ -259,7 +270,7 @@ function initializeSelectable() {
                 filter: '> .row > .cell',
                 start: function(event, ui) {
                     $('.ui-selected').each(function(i, e) {
-                        console.log(i + ":" + e);
+                        // console.log(i + ":" + e);
                         $(e).removeClass('ui-selected');
                     });
                 }

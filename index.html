@@ -158,7 +158,10 @@
           <label for="tool_floodfill">Flood Fill</label>
 
           <input type="radio" id="tool_select" name="tool_switching" value="select" />
-          <label for="tool_select">Copy and Paste</label>
+          <label for="tool_select">Copy/Paste</label>
+
+          <input type="radio" id="tool_select" name="tool_switching" value="crop" />
+          <label for="tool_select">Copy/Create New Stamp</label>
 
           <div id="symbol_picker">
             <div class="symbol_preview symbol_0 selected-symbol-preview" symbol="0"></div>
@@ -184,9 +187,7 @@
             <button onclick="copy_stamp()" id="copy_stamp">duplicate</button>
             <button onclick="rotate_stamp()" id="rotate_stamp">rotate</button>
             <button onclick="flip_stamp()" id="flip_stamp">flip</button>
-            <button onclick="recolor_stamp()" id="recolor_stamp"> recolor </button>
-            <button onclick="scale_stamp_up()" id="scale_stamp_up">scale up</button>
-            <button onclick="scale_stamp_down()">scale down</button>
+            <button onclick="scale_stamp()" id="scale_stamp">scale</button>
         </div>
 
         <div id="list_of_stamps"></div>
@@ -203,12 +204,16 @@
         </div>
 
         <div id="reconstruction_btns">
-          <button onclick="undo_stamp_placement()" id="undo_stamp_placement">
-            Undo Last Stamp Placement
-          </button>
-          <button onclick="check_reconstruction()" id="check_reconstruction">
-            Check and Submit
-          </button>
+          <button onclick="undo_stamp_placement()" id="undo_stamp_placement">Undo Last Stamp Placement</button>
+          <button onclick="check_reconstruction()" id="check_reconstruction">Check and Submit</button>
+
+          <br>
+
+          <button onclick="move_last_stamp('up')" id="move_last_stamp_up">Move last stamp up</button>
+          <button onclick="move_last_stamp('down')" id="move_last_stamp_down">Move last stamp down</button>
+          <button onclick="move_last_stamp('left')" id="move_last_stamp_left">Move last stamp left</button>
+          <button onclick="move_last_stamp('right')" id="move_last_stamp_right">Move last stamp right</button>
+
         </div>
 
         <div id="task_reconstruction"></div>

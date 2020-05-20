@@ -65,6 +65,26 @@ function undo_stamp_placement() {
     run_action_sequence();
 }
 
+function move_last_stamp(direction) {
+    stamp = ACTION_SEQUENCE.pop();
+    switch (direction) {
+        case 'left':
+            stamp[2] -= 1;
+            break;
+        case 'right':
+            stamp[2] += 1;
+            break;
+        case 'up':
+            stamp[3] -= 1;
+            break;
+        case 'down':
+            stamp[3] += 1;
+            break;
+    }
+    ACTION_SEQUENCE.push(stamp);
+    run_action_sequence();
+}
+
 function run_action_sequence() {
     // wipe all the reconstruction grids blank ! 
     Object.keys(REC).forEach(function(key) {
