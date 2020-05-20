@@ -7,7 +7,7 @@ var TASK_NAME = "";
 
 function add_stamp() {
     // make the stamp =======
-    $('.alert').alert()
+
     // step 1 : add a blank stamp of the right size to the canvas
     let size = parseSizeTuple($('#stamp_size').val());
     let height = size[1];
@@ -67,7 +67,7 @@ function render_stamps() {
 }
 
 // no need to have grid param, changed way func is called, but lazy
-function floodfillFromLocation(grid, cell, symbol) {
+function floodfillFromLocation(jqGrid, grid, cell, symbol) {
     console.log("grid : " + grid);
 
     const current_stamp = STAMPS[CUR_STAMP];

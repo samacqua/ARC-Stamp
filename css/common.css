@@ -56,8 +56,6 @@ button:hover {
 
 
 .cell {
-    width: 0px; /* replaced in js by fitCellsToContainer()*/
-    height: 0px;
     border-left: 1px solid #555;
     border-top: 1px solid #555;
     float: left;
@@ -78,12 +76,12 @@ button:hover {
 }
 
 .col-title {
-    float:left;
+    display: inline-block;
 }
 
 .help_btn {
     float:right;   
-    background-color:rgb(100,100,255);
+    background-color:rgb(140,110,255);
 }
 
 /*Selectable*/

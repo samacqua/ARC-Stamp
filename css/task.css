@@ -20,7 +20,7 @@
 }
 
 #load_task_control_btns {
-    float: left;
+    /* float: left; */
     margin-top: 10px;
     padding: 5px;
     background-color: rgb(200, 200, 200);
@@ -30,10 +30,4 @@
 
 #load_stamped_btn {
     visibility: hidden;
-}
-
-.task_preview {
-    float: left;
-    padding: 10px;
-    margin: 10px;
 }

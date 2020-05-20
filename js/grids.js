@@ -146,7 +146,7 @@ function setUpEditionGridListeners(jqGrid) {
             // If floodfill: fill all connected cells.
             syncFromEditionGridToDataGrid();
             grid = CURRENT_OUTPUT_GRID.grid;
-            floodfillFromLocation(grid, cell, symbol);
+            floodfillFromLocation(jqGrid, grid, cell, symbol);
             syncFromDataGridToEditionGrid();
         }
         else if (mode == 'edit') {
@@ -229,14 +229,25 @@ function fitCellsToContainer(jqGrid, height, width, containerHeight, containerWi
     size = Math.min(MAX_CELL_SIZE, size);
     jqGrid.find('.cell').css('height', size + 'px');
     jqGrid.find('.cell').css('width', size + 'px');
+
+    // goal_pct = (containerWidth/2-1)/width;
+    // goal_size = goal_pct*containerWidth/100;
+    // console.log(goal_pct, goal_size);
+
+    // if (goal_size*height > containerHeight) {
+    //     console.log("Too tall");
+    //     goal_size = containerHeight / height;
+    // }
+
+    // jqGrid.find('.cell').css('height', goal_size + 'px');
+    // jqGrid.find('.cell').css('width', goal_size + 'px');
 }
 
 function errorMsg(msg) {
     $('#error_display').stop(true, true);
     $('#info_display').stop(true, true);
 
-    $('#error_display').hide();
-    $('#info_display').hide();
+
     $('#error_display').html(msg);
     $('#error_display').css({"visibility": "visible"});
     $('#error_display').show();
@@ -247,12 +258,11 @@ function infoMsg(msg) {
     $('#error_display').stop(true, true);
     $('#info_display').stop(true, true);
 
-    $('#info_display').hide();
-    $('#error_display').hide();
+
     $('#info_display').html(msg);
     $('#info_display').css({"visibility": "visible"});
-    $('#info_display').show();
-    $('#info_display').fadeOut(5000);
+    $('#info_display').fadeIn(300);
+    $('#info_display').delay(3000).fadeOut(300);
 }
 
 function initializeSelectable() {
