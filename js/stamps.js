@@ -70,15 +70,15 @@ function render_stamps() {
 function floodfillFromLocation(grid, cell, symbol) {
     console.log("grid : " + grid);
 
-    let current_stamp = STAMPS[CUR_STAMP];
+    const current_stamp = STAMPS[CUR_STAMP];
 
-    i = parseInt(cell.attr('x'));
-    j = parseInt(cell.attr('y'));
+    const i = parseInt(cell.attr('x'));
+    const j = parseInt(cell.attr('y'));
     symbol = parseInt(symbol);
 
     grid = current_stamp.grid
 
-    target = grid[i][j];
+    const target = grid[i][j];
     
     if (target == symbol) {
         return;
@@ -197,6 +197,48 @@ function scale_stamp() {
 
 function remove_stamp() {
     STAMPS.splice(CUR_STAMP, 1);
+    CUR_STAMP = STAMPS.length - 1;
+    render_stamps();
+}
+
+function copy_create_new_stamp() {
+    var lowX = 100;
+    var highX = -100;
+
+    var lowY = 100;
+    var highY = -100;
+    for (var i=0;i<COPY_PASTE_DATA.length;i++) {
+        let xVal = COPY_PASTE_DATA[i][1];
+        if (xVal > highX) {
+            highX = xVal;
+        }
+        if (xVal < lowX) {
+            lowX = xVal;
+        }
+
+        let yVal = COPY_PASTE_DATA[i][0];
+        if (yVal > highY) {
+            highY = yVal;
+        }
+        if (yVal < lowY) {
+            lowY = yVal;
+        }
+    }
+
+    height = highY - lowY + 1;
+    width = highX - lowX + 1;
+
+    new_grid = transparent_grid(height, width);
+    console.log(new_grid);
+
+    for (var d=0;d<COPY_PASTE_DATA.length;d++) {
+        x = COPY_PASTE_DATA[d][1] - lowX;
+        y = COPY_PASTE_DATA[d][0] - lowY;
+        val = COPY_PASTE_DATA[d][2];
+        new_grid.grid[y][x] = val;
+    }
+
+    STAMPS.push(new_grid);
     CUR_STAMP = STAMPS.length - 1;
     render_stamps();
 }

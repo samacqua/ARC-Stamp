@@ -261,7 +261,7 @@ function initializeSelectable() {
         console.log("Issue invoking the selectable destroy method")
     }
     toolMode = $('input[name=tool_switching]:checked').val();
-    if (toolMode == 'select' || toolMode == 'crop') {
+    if (toolMode == 'crop') {
         infoMsg('Select some cells and click on a color to fill in, or press C to copy');
         
         $('.selectable_grid').selectable(
