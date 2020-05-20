@@ -1,5 +1,15 @@
 /* Basic elements */
 
+.alert {
+    z-index: 10;
+    position: absolute;
+    right: 10%;
+    left: 10%;
+    top: 10px;
+    text-align: center;
+    visibility: hidden;
+}
+
 body {
     font-family: 'Open Sans', sans-serif;
     display: flex;
@@ -85,22 +95,4 @@ button:hover {
     border: 1px dotted #ddd;
     position: absolute;
     z-index: 1000;
-}
-
-/*Message display*/
-
-#error_display {
-    color: red;
-    width: 100%;
-    float: left;
-    font-size: 14px;
-    margin: 5px;
-}
-
-#info_display {
-    color: green;
-    width: 100%;
-    float: left;
-    font-size: 14px;
-    margin: 5px;
 }

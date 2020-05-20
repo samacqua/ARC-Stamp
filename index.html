@@ -46,9 +46,112 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
 </head>
 
-
-
 <body>
+  <div class="alert alert-success" id="info_display"></div>
+  <div class="alert alert-danger" id="error_display"></div>
+
+  <div class="container-fluid"> 
+    <div class="row">
+
+      <!-- Task Area -->
+      <div class="col-md-4">
+
+        <div class="col-header">
+          <h2 class="col-title">Task and Solution</h2>
+          <button onclick="help_modal(0)" class="help_btn">Help</button>
+        </div>
+
+        <div id="load_task_control_btns">
+          <button onclick="randomTask()" id="random_task_btn">Random Task</button>
+          <button onclick="browse_tasks()" id="browse_tasks_btn" data-toggle="modal" data-target="#browse-tasks-modal">Browse Tasks</button>
+          <button onclick="download_stamps_JSON()">Download Stamps JSON</button>
+          <p>
+            <label id="task_name" for="random_task_btn"> Task name: </label>
+            <br/>
+            <label id="is_solved">Waiting for Info about Labelling...</label>
+            <button onclick="load_stamped()" id="load_stamped_btn">Load Task Stamp</button>
+          </p>
+        </div>
+
+        <div id="task_preview"></div>
+
+      </div>
+
+      <!-- Stamp Area -->
+      <div class="col-md-4">
+
+        <div class="col-header">
+          <h2 class="col-title">Create Stamps</h2>
+          <button onclick="help_modal(1)" class="help_btn">Help</button>
+        </div>
+
+        <div id="toolbar">
+          <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked />
+          <label for="tool_edit">Edit</label>
+          <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill" />
+          <label for="tool_floodfill">Flood Fill</label>
+          <input type="radio" id="tool_select" name="tool_switching" value="crop" />
+          <label for="tool_select">Copy/Create New Stamp</label>
+
+          <div id="symbol_picker">
+            <div class="symbol_preview symbol_0 selected-symbol-preview" symbol="0"></div>
+            <div class="symbol_preview symbol_1" symbol="1"></div>
+            <div class="symbol_preview symbol_2" symbol="2"></div>
+            <div class="symbol_preview symbol_3" symbol="3"></div>
+            <div class="symbol_preview symbol_4" symbol="4"></div>
+            <div class="symbol_preview symbol_5" symbol="5"></div>
+            <div class="symbol_preview symbol_6" symbol="6"></div>
+            <div class="symbol_preview symbol_7" symbol="7"></div>
+            <div class="symbol_preview symbol_8" symbol="8"></div>
+            <div class="symbol_preview symbol_9" symbol="9"></div>
+            <div class="symbol_preview symbol_10" symbol="10"></div>
+          </div>
+        </div>
+
+        <div id="editor_grid_control_btns">
+            <label for="output_grid_size">New stamp size: </label>
+            <input type="text" id="stamp_size" class="grid_size_field" name="size" value="3x3" />
+            <button onclick="add_stamp()" id="add_stamp">create</button>
+            <br />
+            <button onclick="remove_stamp()" id="remove_stamp">remove</button>
+            <button onclick="copy_stamp()" id="copy_stamp">duplicate</button>
+            <button onclick="rotate_stamp()" id="rotate_stamp">rotate</button>
+            <button onclick="flip_stamp()" id="flip_stamp">flip</button>
+            <button onclick="scale_stamp()" id="scale_stamp">scale</button>
+        </div>
+
+        <div id="list_of_stamps"></div>
+
+      </div>
+
+      <!-- Reconstruction Area -->
+      <div class="col-md-4">
+
+        <div class="col-header">
+            <h2 class="col-title">The Reconstruction</h2>
+            <button onclick="help_modal(2)" class="help_btn">Help</button>
+        </div>
+        
+        <div id="reconstruction_annotation">
+          <h4 id="reconstruction_annotation_h4">Annotation From Last Stamp</h4>
+          <p id="reconstruction_annotation_p"></p>
+        </div>
+
+        <div id="reconstruction_btns">
+          <button onclick="undo_stamp_placement()" id="undo_stamp_placement">Undo Last Stamp Placement</button>
+          <button onclick="check_reconstruction()" id="check_reconstruction">Check and Submit</button>
+          <br>
+          <button onclick="move_last_stamp('up')" id="move_last_stamp_up">↑</button>
+          <button onclick="move_last_stamp('down')" id="move_last_stamp_down">↓</button>
+          <button onclick="move_last_stamp('left')" id="move_last_stamp_left">←</button>
+          <button onclick="move_last_stamp('right')" id="move_last_stamp_right">→</button>
+        </div>
+
+        <div id="task_reconstruction"></div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Generic Modal -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -120,117 +223,6 @@
           <button type="button" onclick="store_parse_current_info()" class="btn btn-primary" data-dismiss="modal">Submit</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="container-fluid"> 
-    <div class="row">
-
-      <!-- Task Area -->
-      <div class="col-md-4">
-
-        <div class="col-header">
-          <h2 class="col-title">Task and Solution</h2>
-          <button onclick="help_modal(0)" class="help_btn">Help</button>
-        </div>
-
-        <div id="load_task_control_btns">
-          <button onclick="randomTask()" id="random_task_btn">Random Task</button>
-          <button onclick="browse_tasks()" id="browse_tasks_btn" data-toggle="modal" data-target="#browse-tasks-modal">Browse Tasks</button>
-          <button onclick="download_stamps_JSON()">Download Stamps JSON</button>
-          <p>
-            <label id="task_name" for="random_task_btn"> Task name: </label>
-            <br/>
-            <label id="is_solved">Waiting for Info about Labelling...</label>
-            <button onclick="load_stamped()" id="load_stamped_btn">Load Task Stamp</button>
-          </p>
-        </div>
-
-        <div id="error_display"></div>
-        <div id="info_display"></div>
-
-        
-        <div id="task_preview"></div>
-      </div>
-
-      <!-- Stamp Area -->
-      <div class="col-md-4">
-
-        <div class="col-header">
-          <h2 class="col-title">Create Stamps</h2>
-          <button onclick="help_modal(1)" class="help_btn">Help</button>
-        </div>
-
-        <div id="toolbar">
-          <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked />
-          <label for="tool_edit">Edit</label>
-
-          <input type="radio" id="tool_floodfill" name="tool_switching" value="floodfill" />
-          <label for="tool_floodfill">Flood Fill</label>
-
-          <input type="radio" id="tool_select" name="tool_switching" value="crop" />
-          <label for="tool_select">Copy/Create New Stamp</label>
-
-          <div id="symbol_picker">
-            <div class="symbol_preview symbol_0 selected-symbol-preview" symbol="0"></div>
-            <div class="symbol_preview symbol_1" symbol="1"></div>
-            <div class="symbol_preview symbol_2" symbol="2"></div>
-            <div class="symbol_preview symbol_3" symbol="3"></div>
-            <div class="symbol_preview symbol_4" symbol="4"></div>
-            <div class="symbol_preview symbol_5" symbol="5"></div>
-            <div class="symbol_preview symbol_6" symbol="6"></div>
-            <div class="symbol_preview symbol_7" symbol="7"></div>
-            <div class="symbol_preview symbol_8" symbol="8"></div>
-            <div class="symbol_preview symbol_9" symbol="9"></div>
-            <div class="symbol_preview symbol_10" symbol="10"></div>
-          </div>
-        </div>
-
-        <div id="editor_grid_control_btns">
-            <label for="output_grid_size">New stamp size: </label>
-            <input type="text" id="stamp_size" class="grid_size_field" name="size" value="3x3" />
-            <button onclick="add_stamp()" id="add_stamp">create</button>
-            <br />
-            <button onclick="remove_stamp()" id="remove_stamp">remove</button>
-            <button onclick="copy_stamp()" id="copy_stamp">duplicate</button>
-            <button onclick="rotate_stamp()" id="rotate_stamp">rotate</button>
-            <button onclick="flip_stamp()" id="flip_stamp">flip</button>
-            <button onclick="scale_stamp()" id="scale_stamp">scale</button>
-        </div>
-
-        <div id="list_of_stamps"></div>
-
-      </div>
-
-      <!-- Reconstruction Area -->
-      <div class="col-md-4">
-
-        <div class="col-header">
-            <h2 class="col-title">The Reconstruction</h2>
-            <button onclick="help_modal(2)" class="help_btn">Help</button>
-        </div>
-        
-        <div id="reconstruction_annotation">
-          <h4 id="reconstruction_annotation_h4">Annotation From Last Stamp</h4>
-          <p id="reconstruction_annotation_p"></p>
-        </div>
-
-        <div id="reconstruction_btns">
-          <button onclick="undo_stamp_placement()" id="undo_stamp_placement">Undo Last Stamp Placement</button>
-          <button onclick="check_reconstruction()" id="check_reconstruction">Check and Submit</button>
-
-          <br>
-
-          <button onclick="move_last_stamp('up')" id="move_last_stamp_up">↑</button>
-          <button onclick="move_last_stamp('down')" id="move_last_stamp_down">↓</button>
-          <button onclick="move_last_stamp('left')" id="move_last_stamp_left">←</button>
-          <button onclick="move_last_stamp('right')" id="move_last_stamp_right">→</button>
-
-        </div>
-
-        <div id="task_reconstruction"></div>
-      </div>
-
     </div>
   </div>
 </body>

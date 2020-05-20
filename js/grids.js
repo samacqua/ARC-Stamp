@@ -238,6 +238,7 @@ function errorMsg(msg) {
     $('#error_display').hide();
     $('#info_display').hide();
     $('#error_display').html(msg);
+    $('#error_display').css({"visibility": "visible"});
     $('#error_display').show();
     $('#error_display').fadeOut(5000);
 }
@@ -249,6 +250,7 @@ function infoMsg(msg) {
     $('#info_display').hide();
     $('#error_display').hide();
     $('#info_display').html(msg);
+    $('#info_display').css({"visibility": "visible"});
     $('#info_display').show();
     $('#info_display').fadeOut(5000);
 }

@@ -31,3 +31,9 @@
 #load_stamped_btn {
     visibility: hidden;
 }
+
+.task_preview {
+    float: left;
+    padding: 10px;
+    margin: 10px;
+}
