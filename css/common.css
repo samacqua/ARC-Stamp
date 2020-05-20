@@ -7,10 +7,6 @@ body {
     margin: 0 auto;
 }
 
-h2 {
-    margin-bottom: 15px;
-}
-
 p {
     margin: 0px;
 }
@@ -64,6 +60,20 @@ button:hover {
 
 .selected-symbol-preview {
     border: 2px solid orange;
+}
+
+.col-header {
+    clear:both;
+    margin-bottom: 15px;
+}
+
+.col-title {
+    float:left;
+}
+
+.help_btn {
+    float:right;   
+    background-color:rgb(100,100,255);
 }
 
 /*Selectable*/

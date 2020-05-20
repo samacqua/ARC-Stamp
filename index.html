@@ -34,6 +34,7 @@
   <script src="js/reconstruction.js"></script>
   <script src="js/fire.js"></script>
   <script src="js/start.js"></script>
+  <script src="js/common.js"></script>
 
   <!-- CSS files -->
   <link rel="stylesheet" type="text/css" href="css/common.css" />
@@ -49,17 +50,17 @@
 
 <body>
 
-  <!-- Modal -->
+  <!-- Generic Modal -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalCenterTitle">Welcome to the ARC Stamping Interface!</h3>
+          <h3 class="modal-title" id="gen-modal-title">Welcome to the ARC Stamping Interface!</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="gen-modal-body">
           To start, either choose a random task, or browse through the tasks to see which ones need stamping. Then, create your stamps and reconstruct the task with those stamps! You can also download all current stamps as a JSON.
         </div>
         <div class="modal-footer">
@@ -104,7 +105,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalCenterTitle">Stamp Submission</h3>
+          <h3 class="modal-title">Stamp Submission</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -124,9 +125,14 @@
 
   <div class="container-fluid"> 
     <div class="row">
+
+      <!-- Task Area -->
       <div class="col-md-4">
 
-        <h2>Task and Solution</h2>
+        <div class="col-header">
+          <h2 class="col-title">Task and Solution</h2>
+          <button onclick="help_modal(0)" class="help_btn">Help</button>
+        </div>
 
         <div id="load_task_control_btns">
           <button onclick="randomTask()" id="random_task_btn">Random Task</button>
@@ -147,8 +153,13 @@
         <div id="task_preview"></div>
       </div>
 
+      <!-- Stamp Area -->
       <div class="col-md-4">
-        <h2>Create Stamps</h2>
+
+        <div class="col-header">
+          <h2 class="col-title">Create Stamps</h2>
+          <button onclick="help_modal(1)" class="help_btn">Help</button>
+        </div>
 
         <div id="toolbar">
           <input type="radio" id="tool_edit" name="tool_switching" value="edit" checked />
@@ -178,7 +189,7 @@
         <div id="editor_grid_control_btns">
             <label for="output_grid_size">New stamp size: </label>
             <input type="text" id="stamp_size" class="grid_size_field" name="size" value="3x3" />
-            <button onclick="add_stamp()" id="add_stamp">add</button>
+            <button onclick="add_stamp()" id="add_stamp">create</button>
             <br />
             <button onclick="remove_stamp()" id="remove_stamp">remove</button>
             <button onclick="copy_stamp()" id="copy_stamp">duplicate</button>
@@ -189,12 +200,16 @@
 
         <div id="list_of_stamps"></div>
 
-        
-
       </div>
 
+      <!-- Reconstruction Area -->
       <div class="col-md-4">
-        <h2>The Reconstruction</h2>
+
+        <div class="col-header">
+            <h2 class="col-title">The Reconstruction</h2>
+            <button onclick="help_modal(2)" class="help_btn">Help</button>
+        </div>
+        
         <div id="reconstruction_annotation">
           <h4 id="reconstruction_annotation_h4">Annotation From Last Stamp</h4>
           <p id="reconstruction_annotation_p"></p>
@@ -206,10 +221,10 @@
 
           <br>
 
-          <button onclick="move_last_stamp('up')" id="move_last_stamp_up">Move last stamp up</button>
-          <button onclick="move_last_stamp('down')" id="move_last_stamp_down">Move last stamp down</button>
-          <button onclick="move_last_stamp('left')" id="move_last_stamp_left">Move last stamp left</button>
-          <button onclick="move_last_stamp('right')" id="move_last_stamp_right">Move last stamp right</button>
+          <button onclick="move_last_stamp('up')" id="move_last_stamp_up">↑</button>
+          <button onclick="move_last_stamp('down')" id="move_last_stamp_down">↓</button>
+          <button onclick="move_last_stamp('left')" id="move_last_stamp_left">←</button>
+          <button onclick="move_last_stamp('right')" id="move_last_stamp_right">→</button>
 
         </div>
 

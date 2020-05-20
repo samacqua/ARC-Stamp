@@ -10,8 +10,8 @@ function add_stamp() {
 
     // step 1 : add a blank stamp of the right size to the canvas
     let size = parseSizeTuple($('#stamp_size').val());
-    let height = size[0];
-    let width = size[1];
+    let height = size[1];
+    let width = size[0];
     let blank_grid = transparent_grid(height, width);
     STAMPS.push(blank_grid);
     CUR_STAMP = STAMPS.length - 1;
